@@ -40,4 +40,20 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Role')->withPivot('created_at');
 
     }
+    
+    # Accessor
+    public function getNameAttribute($value){
+
+        return ucfirst($value);
+
+    }
+
+    public function isAdmin(){
+
+        if($this->roles->first()->name == 'admin'){
+            return true;
+        } 
+        return false;
+        
+    }
 }

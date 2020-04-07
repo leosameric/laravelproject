@@ -2,6 +2,7 @@
 
 use App\Post;
 use App\User;
+use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -14,14 +15,31 @@ use App\User;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+    $user = Auth::user();
+
+    if($user->isAdmin()){
+        echo "you are admin!";
+    }
 });
 
-Route::resource('/posts', 'PostController');
+Route::group(['middleware' => []], function() {
+
+    Route::resource('/posts', 'PostController');
+    
+});
+
+
+Route::get('/admin/user/roles', ['middleware' => 'role', function(){
+
+}]);
+
+// use get need some type of method
+Route::get('/admin', 'AdminController@index');
+
 
 // Route::resource('/contact/{id}', 'VehicleController@show_views');
-
-Route::resource('/contact', 'PostController@contact');
+// Route::resource('/contact', 'PostController@contact');
 
 // Route::get('/insert', function(){
 //     $value = ['PHP laravel title', 'I love laravle'];
@@ -50,14 +68,7 @@ Route::resource('/contact', 'PostController@contact');
 
 // });
 
-// Route::get('/posts', function(){
-    
-//     $user = User::find(1);
-    
-//     foreach($user->posts as $post){
-//         echo $post->title. "<br>";
-//     }
-// });
+
 
 
 #get roles
@@ -69,15 +80,6 @@ Route::resource('/contact', 'PostController@contact');
 //     foreach($user->roles as $role){
 //         echo $user->name. ' is '. $role->name. "<br>";
 //     }
-// });
-
-/**
- * Eloquent
- */
-
-// Route::get('/find', function(){
-//     $posts = Post::find(2);
-//     return $posts->body;
 // });
 
 
@@ -108,3 +110,7 @@ Route::resource('/contact', 'PostController@contact');
 
 //
 
+
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
